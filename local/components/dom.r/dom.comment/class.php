@@ -60,7 +60,6 @@ class DomComment extends CBitrixComponent
 
             if (count($this->arResult['COMMENTS']) < 1) {
                 $this->abortResultCache();
-                return 0;
             }
 
             $this->setResultCacheKeys(['COMMENTS']);
