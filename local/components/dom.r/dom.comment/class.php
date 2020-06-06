@@ -6,8 +6,9 @@ class DomComment extends CBitrixComponent
 {
     public function onPrepareComponentParams($arParams)
     {
+        // ELEMENT_ID - prior to ancestor
         $eltIdFromGet = (int) $this->request->getQuery($arParams['GET_PARAM_NAME']);
-        if ($eltIdFromGet > 0) {
+        if ($arParams['ELEMENT_ID'] < 1 && $eltIdFromGet > 0) {
             $arParams['ELEMENT_ID'] = $eltIdFromGet;
         }
         // check parameters filled
@@ -20,14 +21,16 @@ class DomComment extends CBitrixComponent
             return ['ERROR' => true];
         }
 
+        // getting comment from post
         $commentText = $this->request->getPost('new_comment');
-        $arParams['NEW_COMMENT'] = htmlspecialchars($commentText);
+        $arParams['NEW_COMMENT'] = htmlspecialchars($commentText); // some filters
 
         return $arParams;
     }
 
     public function executeComponent()
     {
+        // if no required params or ELEMENT_ID - finished exec
         if (
             $this->arParams['ERROR'] === true
             || $this->arParams['ELEMENT_ID'] < 1
