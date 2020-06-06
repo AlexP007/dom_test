@@ -10,11 +10,6 @@ if(!Loader::IncludeModule("iblock"))
 
 $arComponentParameters = [
 	"PARAMETERS" => [
-		"IBLOCK_ID" => [
-			"PARENT" => "BASE",
-			"NAME" => Loc::getMessage("DOM_DETAIL_PARAMETER_IBLOCK_ID"),
-			"TYPE" => "STRING",
-		],
         "GET_PARAM_NAME" => [
 			"PARENT" => "BASE",
 			"NAME" => Loc::getMessage("DOM_DETAIL_PARAMETER_GET_PARAM_NAME"),
