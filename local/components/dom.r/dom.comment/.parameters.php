@@ -25,6 +25,11 @@ $arComponentParameters = [
 			"NAME" => Loc::getMessage("DOM_COMMENT_PARAMETER_RELATED_FIELD"),
 			"TYPE" => "STRING",
 		],
+        "GET_PARAM_NAME" => [
+            "PARENT" => "BASE",
+            "NAME" => Loc::getMessage("DOM_COMMENT_PARAMETER_GET_PARAM_NAME"),
+            "TYPE" => "STRING",
+        ],
 		"CACHE_TIME"  =>  ["DEFAULT"=>36000000],
 	],
 ];
