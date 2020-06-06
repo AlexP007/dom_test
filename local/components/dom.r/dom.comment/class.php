@@ -38,10 +38,12 @@ class DomComment extends CBitrixComponent
             return 0;
         }
 
+        // check iblock module
         if(!Loader::includeModule("iblock")) {
             ShowError('depends on iblock');
             return 0;
         }
+
         // add comment
         if (strlen($this->arParams['NEW_COMMENT']) > 0) {
             // if success - refresh
@@ -50,10 +52,23 @@ class DomComment extends CBitrixComponent
             };
         }
 
-        // fetching comments
-        $this->arResult['COMMENTS'] = $this->getComments();
+        // tag cache
+        if ($this->startResultCache(false)) {
 
-        $this->includeComponentTemplate();
+            // fetching comments
+            $this->arResult['COMMENTS'] = $this->getComments();
+
+            if (count($this->arResult['COMMENTS']) < 1) {
+                $this->abortResultCache();
+                return 0;
+            }
+
+            $this->setResultCacheKeys(['COMMENTS']);
+            // include template
+            $this->includeComponentTemplate();
+        }
+
+        return 1;
     }
 
     private function addComment($comment)
