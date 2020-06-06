@@ -1,23 +1,23 @@
 <?php if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 
 use Bitrix\Main\Loader;
-use Bitrix\Iblock\Component\Tools;
 
 class DomComment extends CBitrixComponent
 {
     public function onPrepareComponentParams($arParams)
     {
+        // check parameters filled
         if (
             (int) $arParams['IBLOCK_ID'] < 1
-            || (int) $this->arParams['ELEMENT_ID'] < 1
-            || strlen($this->arParams['RELATED_FIELD']) < 1
+            || (int) $arParams['ELEMENT_ID'] < 1
+            || strlen($arParams['RELATED_FIELD']) < 1
         ) {
             ShowError("To init DomComment component IBLOCK_ID,
              ELEMENT_ID, RELATED_FIELD are required");
             return ['ERROR' => true];
         }
 
-        $commentText = $this->request->getQuery('comment_text');
+        $commentText = $this->request->getPost('new_comment');
         $arParams['NEW_COMMENT'] = htmlspecialchars($commentText);
 
         return $arParams;
@@ -29,6 +29,10 @@ class DomComment extends CBitrixComponent
             return 0;
         }
 
+        if(!Loader::includeModule("iblock")) {
+            ShowError('depends on iblock');
+            return 0;
+        }
         // add comment
         if (strlen($this->arParams['NEW_COMMENT']) > 0) {
             $this->addComment($this->arParams['NEW_COMMENT']);
@@ -44,12 +48,16 @@ class DomComment extends CBitrixComponent
     {
         $elementId = $this->arParams['ELEMENT_ID'];
 
-        $commentId = CIBlockElement::Add([
+        $newComment = new CIBlockElement;
+
+        $commentId = $newComment->Add([
+            "IBLOCK_SECTION" => false,
+            "NAME" => substr($comment, 0, 8) . "...",
             "IBLOCK_ID"   => $this->arParams['IBLOCK_ID'],
             "ACTIVE"      => "Y",
             "DETAIL_TEXT" => $comment,
             "PROPERTY_VALUES" => [
-                "PROPERTY_{$this->arParams['RELATED_FIELD']}" => $elementId,
+                $this->arParams['RELATED_FIELD'] => $elementId,
             ]
         ]);
 
@@ -65,7 +73,7 @@ class DomComment extends CBitrixComponent
             return false;
         }
 
-        return true;
+        LocalRedirect($this->request->getRequestUri());
     }
 
     private function getComments()

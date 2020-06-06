@@ -4,4 +4,9 @@
 ?>
 
 
+<form method="POST">
+    <textarea name="new_comment" id="" cols="30" rows="10"></textarea>
+    <button type="submit">Добавить коммент</button>
+</form>
+
 
