@@ -6,14 +6,17 @@ class DomComment extends CBitrixComponent
 {
     public function onPrepareComponentParams($arParams)
     {
+        $eltIdFromGet = (int) $this->request->getQuery($arParams['GET_PARAM_NAME']);
+        if ($eltIdFromGet > 0) {
+            $arParams['ELEMENT_ID'] = $eltIdFromGet;
+        }
         // check parameters filled
         if (
             (int) $arParams['IBLOCK_ID'] < 1
-            || (int) $arParams['ELEMENT_ID'] < 1
             || strlen($arParams['RELATED_FIELD']) < 1
         ) {
             ShowError("To init DomComment component IBLOCK_ID,
-             ELEMENT_ID, RELATED_FIELD are required");
+             RELATED_FIELD are required");
             return ['ERROR' => true];
         }
 
@@ -25,7 +28,10 @@ class DomComment extends CBitrixComponent
 
     public function executeComponent()
     {
-        if ($this->arParams['ERROR'] === true) {
+        if (
+            $this->arParams['ERROR'] === true
+            || $this->arParams['ELEMENT_ID'] < 1
+        ) {
             return 0;
         }
 
