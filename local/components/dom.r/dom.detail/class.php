@@ -23,27 +23,46 @@ class DomDetail extends CBitrixComponent
 
     public function executeComponent()
     {
-        $this->arResult['ELEMENT'] = $this->getElement();
+        // tag cache
+        if ($this->startResultCache(false)) {
 
-        // proceed 404
-        if ($this->arResult['ELEMENT'] === false) {
-            Tools::process404(
-                'Not found'
-                ,true
-                ,true,
-                true,
-                false
-            );
+            if(!Loader::includeModule("iblock")) {
+                $this->abortResultCache();
+                ShowError('depends on iblock');
+                return 0;
+            }
+
+            $this->arResult['ELEMENT'] = $this->getElement();
+
+            // proceed 404
+            if ($this->arResult['ELEMENT'] === false) {
+                $this->abortResultCache();
+                $this->proceed404();
+                return 0;
+            }
+
+            $this->setResultCacheKeys(['ELEMENT']);
+            // include template
+            $this->includeComponentTemplate();
         }
-        $this->includeComponentTemplate();
+
+        return 1;
     }
 
     private function getElement()
     {
-        Loader::includeModule("iblock") or die('depend on iblock');
-
         $id = (int) $this->arParams['ELEMENT_ID'];
         return CIBlockElement::GetByID($id)->Fetch();
+    }
 
+    private function proceed404()
+    {
+        Tools::process404(
+            'Not found'
+            ,true
+            ,true,
+            true,
+            false
+        );
     }
 }
