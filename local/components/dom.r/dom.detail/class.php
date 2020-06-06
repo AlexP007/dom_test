@@ -2,8 +2,18 @@
 
 class DomDetail extends CBitrixComponent
 {
-   public function executeComponent()
-   {
-       $this->includeComponentTemplate();
-   }
+    public function onPrepareComponentParams($arParams)
+    {
+        if (!is_null($arParams['GET_PARAM_NAME'])) {
+            $eltId = $this->request->getQuery($arParams['GET_PARAM_NAME']);
+            $arParams['ELEMENT_ID'] = $eltId;
+        };
+
+        return $arParams;
+    }
+
+    public function executeComponent()
+    {
+        $this->includeComponentTemplate();
+    }
 }
