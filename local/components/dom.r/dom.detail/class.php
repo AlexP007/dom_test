@@ -41,6 +41,10 @@ class DomDetail extends CBitrixComponent
                 return 0;
             }
 
+            // picture cropping
+            $pictureId = $this->arResult['ELEMENT']['DETAIL_PICTURE'];
+            $this->arResult['ELEMENT']['DETAIL_PICTURE'] = $this->cropPicture($pictureId);
+
             $this->setResultCacheKeys(['ELEMENT']);
             // include template
             $this->includeComponentTemplate();
@@ -63,6 +67,25 @@ class DomDetail extends CBitrixComponent
             ,true,
             true,
             false
+        );
+    }
+
+    private function cropPicture($id)
+    {
+        $width = $this->arParams['IMAGE_WIDTH'] > 0
+            ? $this->arParams['IMAGE_WIDTH'] : 50;
+
+        $height = $this->arParams['IMAGE_WIDTH'] > 0
+            ? $this->arParams['IMAGE_HEIGHT'] : 50;
+
+        return CFile::ResizeImageGet(
+            $id,
+            [
+                'width' => $width,
+                'height' => $height,
+            ],
+            BX_RESIZE_IMAGE_PROPORTIONAL,
+            true
         );
     }
 }
