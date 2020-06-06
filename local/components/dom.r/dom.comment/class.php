@@ -44,7 +44,10 @@ class DomComment extends CBitrixComponent
         }
         // add comment
         if (strlen($this->arParams['NEW_COMMENT']) > 0) {
-            $this->addComment($this->arParams['NEW_COMMENT']);
+            // if success - refresh
+            if ($this->addComment($this->arParams['NEW_COMMENT'])) {
+                LocalRedirect($this->request->getRequestUri());
+            };
         }
 
         // fetching comments
@@ -82,7 +85,7 @@ class DomComment extends CBitrixComponent
             return false;
         }
 
-        LocalRedirect($this->request->getRequestUri());
+        return true;
     }
 
     private function getComments()
